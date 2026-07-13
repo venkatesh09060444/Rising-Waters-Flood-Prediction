@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flood Prediction System</title>
+    <!-- Bootstrap CSS for basic styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 50px;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center mb-4">Flood Risk Prediction</h2>
+        
+        {% if error %}
+        <div class="alert alert-warning" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <form action="/predict" method="POST">
+            <div class="mb-3">
+                <label for="annual_rainfall" class="form-label">Annual Rainfall (mm)</label>
+                <input type="number" step="any" class="form-control" id="annual_rainfall" name="annual_rainfall" required>
+                <div class="form-text">e.g., 500 to 4000</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="cloud_visibility" class="form-label">Cloud Visibility (0-10)</label>
+                <input type="number" step="any" min="0" max="10" class="form-control" id="cloud_visibility" name="cloud_visibility" required>
+                <div class="form-text">0 is clear, 10 is very cloudy</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="seasonal_rainfall" class="form-label">Seasonal Rainfall (mm)</label>
+                <input type="number" step="any" class="form-control" id="seasonal_rainfall" name="seasonal_rainfall" required>
+                <div class="form-text">e.g., 100 to 2000</div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100">Predict Risk</button>
+        </form>
+    </div>
+</body>
+</html>

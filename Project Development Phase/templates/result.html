@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result - Flood Prediction System</title>
+    <!-- Bootstrap CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 30px;
+            padding-bottom: 50px;
+        }
+        .container {
+            max-width: 900px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 250px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center mb-4">Flood Prediction Result</h2>
+        
+        <div class="alert {{ alert_class }} text-center py-4" role="alert">
+            <h3 class="alert-heading fw-bold">{{ result }}</h3>
+            <p class="fs-5 mb-0">Calculated Probability: <strong>{{ "%.2f"|format(probability * 100) }}%</strong></p>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Flood Risk Probability</h5>
+                        <div class="chart-container">
+                            <canvas id="probabilityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Rainfall Analysis (mm)</h5>
+                        <div class="chart-container">
+                            <canvas id="rainfallChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Cloud Visibility Comparison (Scale 0-10)</h5>
+                        <div class="row text-center mt-3">
+                            <div class="col-6">
+                                <h6>Your Input</h6>
+                                <p class="display-6 text-primary fw-bold">{{ "%.1f"|format(c_vis) }}</p>
+                            </div>
+                            <div class="col-6">
+                                <h6>Historical Average</h6>
+                                <p class="display-6 text-secondary">{{ "%.1f"|format(avg_c_vis) }}</p>
+                            </div>
+                        </div>
+                        <div class="progress mt-2" style="height: 20px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ c_vis * 10 }}%;" aria-valuenow="{{ c_vis }}" aria-valuemin="0" aria-valuemax="10">Input: {{ "%.1f"|format(c_vis) }}</div>
+                        </div>
+                        <div class="progress mt-2" style="height: 20px; opacity: 0.6;">
+                            <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ avg_c_vis * 10 }}%;" aria-valuenow="{{ avg_c_vis }}" aria-valuemin="0" aria-valuemax="10">Avg: {{ "%.1f"|format(avg_c_vis) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-secondary px-5 py-2">Make Another Prediction</a>
+        </div>
+    </div>
+
+    <script>
+        // Probability Chart
+        const probCtx = document.getElementById('probabilityChart').getContext('2d');
+        const prob = {{ probability }};
+        new Chart(probCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Risk', 'Safe'],
+                datasets: [{
+                    data: [prob, 1 - prob],
+                    backgroundColor: [
+                        prob > 0.5 ? '#dc3545' : '#198754',
+                        '#e9ecef'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Rainfall Chart
+        const rainCtx = document.getElementById('rainfallChart').getContext('2d');
+        new Chart(rainCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Annual Rainfall', 'Seasonal Rainfall'],
+                datasets: [
+                    {
+                        label: 'Your Input (mm)',
+                        data: [{{ a_rain }}, {{ s_rain }}],
+                        backgroundColor: '#0d6efd',
+                        borderColor: '#0d6efd',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Historical Avg (mm)',
+                        data: [{{ avg_a_rain }}, {{ avg_s_rain }}],
+                        backgroundColor: '#adb5bd',
+                        borderColor: '#adb5bd',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
