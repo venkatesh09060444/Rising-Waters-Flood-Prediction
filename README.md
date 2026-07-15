@@ -114,3 +114,6 @@ Developed as part of the **SmartBridge AI/ML SkillWallet Project**.
 ## 📄 License
 
 This project is developed for educational and academic purposes.
+
+## Demo video
+https://drive.google.com/file/d/10v5I06fNcZU0rUsE94udETDqlnd6bmS_/view?usp=drivesdk
